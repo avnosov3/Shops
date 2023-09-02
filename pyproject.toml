@@ -17,6 +17,16 @@ psycopg2-binary = "2.9.7"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "3.3.3"
+flake8 = "^6.1.0"
+pep8-naming = "^0.13.3"
+flake8-broken-line = "^1.0.0"
+flake8-return = "^1.2.0"
+
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.4.1"
+pytest-asyncio = "^0.21.1"
+requests = "^2.31.0"
 
 [build-system]
 requires = ["poetry-core"]
