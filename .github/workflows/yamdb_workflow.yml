@@ -18,9 +18,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install poetry
       run: |
         pip install poetry
+    - name: Install project dependencies from local pyproject.toml
+      run: |
+        cd ./.
         poetry install
     - name: Test with flake8 and django tests
       run: |
