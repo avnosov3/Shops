@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.10"]
 
     steps:
     - name: Check out the repo
@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install poetry
-        poetry install --file /c/Dev/2_Personal/test-tasks/Shops/pyproject.toml
+        poetry install
     - name: Test with flake8 and django tests
       run: |
         python -m flake8
