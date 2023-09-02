@@ -1,4 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.ext.declarative import declared_attr
 
 from app.core.db import Base
 from app.models import constants
@@ -9,7 +10,10 @@ class PersonBase(Base):
 
     name = Column(String(constants.MAX_LENGHT), nullable=False)
     phone_number = Column(String(constants.MAX_LENGHT), nullable=False)
-    shopping_point_id = Column(Integer, ForeignKey('shopping_point.id'))
+
+    @declared_attr
+    def shopping_point_id(cls):
+        return Column(Integer, ForeignKey('shoppingpoint.id'), nullable=False)
 
     OUT = 'Название "{}". Номер телефона "{}"'
 
