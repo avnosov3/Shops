@@ -3,14 +3,21 @@ repos:
     rev: v4.2.0
     hooks:
     -   id: trailing-whitespace
+        exclude: README.md
     -   id: check-added-large-files
+        exclude: README.md
     -   id: check-yaml
+        exclude: README.md
     -   id: check-json
         exclude: launch.json
     -   id: check-case-conflict
+        exclude: README.md
     -   id: check-merge-conflict
+        exclude: README.md
     -   id: double-quote-string-fixer
+        exclude: README.md
     -   id: end-of-file-fixer
+        exclude: README.md
 
 -   repo: https://github.com/pycqa/isort
     rev: 5.12.0
