@@ -15,7 +15,7 @@ class PersonBase(Base):
     def shopping_point_id(cls):
         return Column(Integer, ForeignKey('shoppingpoint.id'), nullable=False)
 
-    OUT = 'Название "{}". Номер телефона "{}"'
+    OUT = 'Название "{}". Номер телефона "{}". Тороговая точка "{}"'
 
     def __repr__(self):
-        return self.OUT.format(self.name, self.phone_number)
+        return self.OUT.format(self.name, self.phone_number, self.shopping_point_id)
