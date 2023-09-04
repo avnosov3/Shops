@@ -21,6 +21,7 @@ flake8 = "^6.1.0"
 pep8-naming = "^0.13.3"
 flake8-broken-line = "^1.0.0"
 flake8-return = "^1.2.0"
+faker = "^19.3.1"
 
 
 [tool.poetry.group.test.dependencies]
