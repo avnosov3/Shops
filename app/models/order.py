@@ -22,4 +22,4 @@ class Order(VisitOrderBase):
         values_callable=lambda statuses: [status.value for status in statuses]
     ))
 
-    visit = relationship('Visit', back_populates='order', uselist=False, cascade='delete')
+    visit = relationship('Visit', uselist=False, cascade='delete')

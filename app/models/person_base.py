@@ -18,11 +18,11 @@ class PersonBase(Base):
 
     @declared_attr
     def visits(cls):
-        return relationship('Visit', cascade='delete', back_populates='customer')
+        return relationship('Visit', cascade='delete')
 
     @declared_attr
     def orders(cls):
-        return relationship('Order', cascade='delete', back_populates='customer')
+        return relationship('Order', cascade='delete')
 
     OUT = 'Название "{}". Номер телефона "{}". Тороговая точка "{}"'
 
