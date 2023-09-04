@@ -9,7 +9,7 @@ from app.models.worker import Worker
 
 class ShoppingPointCRUD(CRUDBase):
 
-    async def get_all_by_phone_number(self, phone_number: str, session: AsyncSession):
+    async def get_by_phone_number(self, phone_number: str, session: AsyncSession):
         return await session.scalar(
             select(ShoppingPoint).join(Worker).where(Worker.phone_number == phone_number)
         ) or await session.scalar(
