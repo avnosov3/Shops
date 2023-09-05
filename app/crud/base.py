@@ -69,3 +69,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         await session.delete(db_obj)
         await session.commit()
         return db_obj
+
+    async def get_by_attribute(
+        self,
+        attr_name: str,
+        attr_value: str,
+        session: AsyncSession,
+    ) -> ModelType:
+        attr = getattr(self.model, attr_name)
+        db_obj = await session.execute(
+            select(self.model).where(attr == attr_value)
+        )
+        return db_obj.scalars().first()
