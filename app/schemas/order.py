@@ -23,6 +23,7 @@ class OrderCreateDBSchema(OrderCreateSchema):
 class OrderResponseSchema(BaseModel):
     create_date: datetime
     close_date: datetime
+    status: Status
     customer: str
     worker: str
     shopping_point: str
