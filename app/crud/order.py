@@ -26,5 +26,23 @@ class OrderCRUD(CRUDBase):
         )
         return orders.fetchall()
 
+    async def get_with_names(self, order_id, session):
+        orders = await session.execute(
+            select(
+                Order.id,
+                Order.status,
+                Order.close_date,
+                Order.create_date,
+                Customer.name.label('customer'),
+                Worker.name.label('worker'),
+                ShoppingPoint.name.label('shopping_point')
+            )
+            .join(Customer, Order.customer_id == Customer.id)
+            .join(Worker, Order.worker_id == Worker.id)
+            .join(ShoppingPoint, Order.shopping_point_id == ShoppingPoint.id)
+            .where(Order.id == order_id)
+        )
+        return orders.fetchone()
+
 
 order_crud = OrderCRUD(Order)
