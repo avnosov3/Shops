@@ -1,5 +1,6 @@
 SHOPPING_POINT_NOT_FOUND = 'По номеру телефона {} не найдено торговой точки'
 CREATE_ORDER_FORBIDDEN = 'У вас нет прав на создание заказа'
+ORDER_NOT_FOUND = 'Заказ не найден'
 WORKER_NOT_BELOGNS = 'К этой торговой точке работник не привязан'
 WORKER_NOT_FOUND = 'Работник не найден'
 CUSTOMER_NOT_FOUND = 'Заказчик не найден'

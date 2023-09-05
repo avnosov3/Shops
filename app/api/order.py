@@ -12,6 +12,8 @@ from app.schemas.order import (
     OrderCreateDBSchema,
     OrderCreateSchema,
     OrderResponseSchema,
+    OrderUpdateDBSchema,
+    OrderUpdateSchema,
 )
 
 order_router = APIRouter()
@@ -79,4 +81,35 @@ async def get_order(
 
     session: AsyncSession = Depends(get_async_session)
 ):
+    return await order_crud.get_with_names(order_id, session)
+
+
+@order_router.patch('/{order_id}')
+async def update_order(
+    order_id: int,
+    order_in: OrderUpdateSchema,
+    session: AsyncSession = Depends(get_async_session)
+):
+    order_db = await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
+    order_update_schema = OrderUpdateDBSchema(
+        close_date=order_in.close_date,
+        status=order_in.status
+    )
+    worker_phone_number = order_in.worker_phone_number
+    if order_in.worker_phone_number:
+        worker = await worker_crud.get_by_attribute(
+            'phone_number', worker_phone_number, session
+        )
+        if worker is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=constants.WORKER_NOT_FOUND
+            )
+        order_update_schema.worker_id = worker.id
+        order_update_schema.shopping_point_id = worker.shopping_point_id
+    await order_crud.update(
+        order_db,
+        order_update_schema,
+        session
+    )
     return await order_crud.get_with_names(order_id, session)

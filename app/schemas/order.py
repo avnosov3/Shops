@@ -30,3 +30,16 @@ class OrderResponseSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class OrderUpdateSchema(BaseModel):
+    close_date: datetime | None = Field(None, example=TO_TIME)
+    status: Status | None = None
+    worker_phone_number: str | None = None
+
+
+class OrderUpdateDBSchema(BaseModel):
+    close_date: datetime | None = Field(None, example=TO_TIME)
+    status: Status | None = None
+    worker_id: int | None = None
+    shopping_point_id: int | None = None
