@@ -84,7 +84,7 @@ async def get_order(
     return await order_crud.get_with_names(order_id, session)
 
 
-@order_router.patch('/{order_id}')
+@order_router.patch('/{order_id}', response_model=OrderResponseSchema)
 async def update_order(
     order_id: int,
     order_in: OrderUpdateSchema,
@@ -113,3 +113,11 @@ async def update_order(
         session
     )
     return await order_crud.get_with_names(order_id, session)
+
+
+@order_router.delete('/{order_id}')
+async def delete_order(
+    order_id: int,
+    session: AsyncSession = Depends(get_async_session)
+):
+    pass
