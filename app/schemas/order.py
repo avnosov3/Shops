@@ -23,5 +23,9 @@ class OrderCreateDBSchema(OrderCreateSchema):
 class OrderResponseSchema(BaseModel):
     create_date: datetime
     close_date: datetime
+    customer: str
     worker: str
     shopping_point: str
+
+    class Config:
+        orm_mode = True

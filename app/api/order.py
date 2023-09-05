@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_pagination import Page, paginate
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api import constants, validators
@@ -49,6 +50,14 @@ async def create_order(
     return OrderResponseSchema(
         create_date=order_db.create_date,
         close_date=order_in.close_date,
+        customer=customer.name,
         worker=worker.name,
         shopping_point=shopping_point.name
     )
+
+
+@order_router.get('/', response_model=Page[OrderResponseSchema])
+async def get_all(
+    session: AsyncSession = Depends(get_async_session)
+):
+    return paginate(await order_crud.get_all_with_names(session))
