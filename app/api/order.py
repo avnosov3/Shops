@@ -58,14 +58,25 @@ async def create_order(
 
 @order_router.get('/', response_model=Page[OrderResponseSchema])
 async def get_orders(
+    customer: str | None = None,
+    worker: str | None = None,
+    shopping_point: str | None = None,
+    status: str | None = None,
     session: AsyncSession = Depends(get_async_session)
 ):
-    return paginate(await order_crud.get_all_with_names(session))
+    return paginate(await order_crud.get_all_with_names(
+        session,
+        customer,
+        worker,
+        shopping_point,
+        status
+    ))
 
 
 @order_router.get('/{order_id}', response_model=OrderResponseSchema)
 async def get_order(
     order_id: int,
+
     session: AsyncSession = Depends(get_async_session)
 ):
     return await order_crud.get_with_names(order_id, session)
