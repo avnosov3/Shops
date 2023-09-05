@@ -12,6 +12,7 @@ from app.schemas.order import (
     OrderCreateDBSchema,
     OrderCreateSchema,
     OrderResponseSchema,
+    OrderStatusUpdate,
     OrderUpdateDBSchema,
     OrderUpdateSchema,
 )
@@ -84,13 +85,7 @@ async def get_order(
     return await order_crud.get_with_names(order_id, session)
 
 
-@order_router.patch('/{order_id}', response_model=OrderResponseSchema)
-async def update_order(
-    phone_number: str,
-    order_id: int,
-    order_in: OrderUpdateSchema,
-    session: AsyncSession = Depends(get_async_session)
-):
+async def proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session):
     customer = await customer_crud.get_by_attribute(
         'phone_number', phone_number, session
     )
@@ -102,6 +97,17 @@ async def update_order(
     )
     order_db = await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
     await validators.check_owner(order_db.customer_id, customer.id)
+    return customer, order_db
+
+
+@order_router.patch('/{order_id}', response_model=OrderResponseSchema)
+async def update_order(
+    phone_number: str,
+    order_id: int,
+    order_in: OrderUpdateSchema,
+    session: AsyncSession = Depends(get_async_session)
+):
+    _, order_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session)
     order_update_schema = OrderUpdateDBSchema(
         close_date=order_in.close_date,
         status=order_in.status
@@ -132,16 +138,18 @@ async def delete_order(
     order_id: int,
     session: AsyncSession = Depends(get_async_session)
 ):
-    customer = await customer_crud.get_by_attribute(
-        'phone_number', phone_number, session
-    )
-    await validators.check_rights_to_create_and_update_delete_order(
-        customer,
-        await worker_crud.get_by_attribute(
-            'phone_number', phone_number, session
-        )
-    )
-    order_db = await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
-    await validators.check_owner(order_db.customer_id, customer.id)
+    _, order_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session)
     await order_crud.delete(order_db, session)
     return dict(detail=constants.ORDER_DELETED)
+
+
+@order_router.patch('/status/{order_id}')
+async def update_status(
+    phone_number: str,
+    order_id: int,
+    order_in: OrderStatusUpdate,
+    session: AsyncSession = Depends(get_async_session)
+):
+    _, order_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session)
+    await order_crud.update(order_db, order_in, session)
+    return await order_crud.get_with_names(order_id, session)

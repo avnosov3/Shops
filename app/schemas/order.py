@@ -43,3 +43,7 @@ class OrderUpdateDBSchema(BaseModel):
     status: Status | None = None
     worker_id: int | None = None
     shopping_point_id: int | None = None
+
+
+class OrderStatusUpdate(BaseModel):
+    status: Status
