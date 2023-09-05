@@ -16,7 +16,7 @@ async def check_obj_exists(obj_id, crud, message, session: AsyncSession):
     return db_obj
 
 
-async def check_rights_to_create_and_update_order(customer, fake_customer):
+async def check_rights_to_create_and_update_delete_order(customer, fake_customer):
     if customer is None and fake_customer is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

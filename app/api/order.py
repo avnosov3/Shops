@@ -29,13 +29,13 @@ async def create_order(
     customer = await customer_crud.get_by_attribute(
         'phone_number', phone_number, session
     )
-    shopping_point_id = customer.shopping_point_id
-    await validators.check_rights_to_create_and_update_order(
+    await validators.check_rights_to_create_and_update_delete_order(
         customer,
         await worker_crud.get_by_attribute(
             'phone_number', phone_number, session
         )
     )
+    shopping_point_id = customer.shopping_point_id
     worker = await worker_crud.get_by_attribute(
         'shopping_point_id', shopping_point_id, session
     )
@@ -94,7 +94,7 @@ async def update_order(
     customer = await customer_crud.get_by_attribute(
         'phone_number', phone_number, session
     )
-    await validators.check_rights_to_create_and_update_order(
+    await validators.check_rights_to_create_and_update_delete_order(
         customer,
         await worker_crud.get_by_attribute(
             'phone_number', phone_number, session
@@ -128,7 +128,20 @@ async def update_order(
 
 @order_router.delete('/{order_id}')
 async def delete_order(
+    phone_number: str,
     order_id: int,
     session: AsyncSession = Depends(get_async_session)
 ):
-    pass
+    customer = await customer_crud.get_by_attribute(
+        'phone_number', phone_number, session
+    )
+    await validators.check_rights_to_create_and_update_delete_order(
+        customer,
+        await worker_crud.get_by_attribute(
+            'phone_number', phone_number, session
+        )
+    )
+    order_db = await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
+    await validators.check_owner(order_db.customer_id, customer.id)
+    await order_crud.delete(order_db, session)
+    return dict(detail=constants.ORDER_DELETED)
