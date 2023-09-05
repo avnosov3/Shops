@@ -30,7 +30,7 @@ async def create_order(
     customer = await customer_crud.get_by_attribute(
         'phone_number', phone_number, session
     )
-    await validators.check_rights_to_create_and_update_delete_order(
+    await validators.check_rights_to_create_and_update_delete_obj(
         customer,
         await worker_crud.get_by_attribute(
             'phone_number', phone_number, session
@@ -89,7 +89,7 @@ async def proccess_update_delete_permissions_and_obj_exsisting(phone_number, ord
     customer = await customer_crud.get_by_attribute(
         'phone_number', phone_number, session
     )
-    await validators.check_rights_to_create_and_update_delete_order(
+    await validators.check_rights_to_create_and_update_delete_obj(
         customer,
         await worker_crud.get_by_attribute(
             'phone_number', phone_number, session
