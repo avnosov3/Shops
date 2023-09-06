@@ -112,7 +112,7 @@ async def proccess_update_delete_permissions_and_obj_exsisting(phone_number, vis
     return customer, visit_db
 
 
-@visit_router.patch('/{order_id}/{visit_id}')
+@visit_router.patch('/{order_id}/{visit_id}', response_model=VisitResponseSchema)
 async def update_visit(
     order_id: int,
     visit_id: int,
@@ -141,3 +141,16 @@ async def update_visit(
         visit_update_schema.shopping_point_id = worker.shopping_point_id
     await visit_crud.update(visit_db, visit_update_schema, session)
     return await visit_crud.get_with_names(visit_id, session)
+
+
+@visit_router.delete('/{order_id}/{visit_id}')
+async def delete_visit(
+    phone_number: str,
+    order_id: int,
+    visit_id: int,
+    session: AsyncSession = Depends(get_async_session)
+):
+    await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
+    _, visit_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, visit_id, session)
+    await visit_crud.delete(visit_db, session)
+    return dict(detail=constants.VISIT_DELETED)
