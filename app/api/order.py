@@ -82,7 +82,12 @@ async def get_order(
 
     session: AsyncSession = Depends(get_async_session)
 ):
-    return await order_crud.get_with_names(order_id, session)
+    order_db = await order_crud.get_with_names(order_id, session)
+    if order_db is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=constants.ORDER_NOT_FOUND
+        )
 
 
 async def proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session):
