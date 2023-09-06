@@ -80,3 +80,11 @@ async def get_visits(
         worker,
         shopping_point,
     ))
+
+
+@visit_router.get('/{visit_id}', response_model=VisitResponseSchema)
+async def get_visit(
+    visit_id: int,
+    session: AsyncSession = Depends(get_async_session)
+):
+    return await visit_crud.get_with_names(visit_id, session)
