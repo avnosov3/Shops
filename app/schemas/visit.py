@@ -20,3 +20,6 @@ class VisitResponseSchema(BaseModel):
     worker: str
     customer: str
     shopping_point: str
+
+    class Config:
+        orm_mode = True
