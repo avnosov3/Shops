@@ -52,3 +52,21 @@ async def test_read_order(client: TestClient, session: AsyncSession) -> None:
         (data['worker'], worker.name),
     ):
         assert value == expected
+
+
+async def test_permission_on_delete_order(client: TestClient, session: AsyncSession) -> None:
+    order, _, _, _ = await create_order(session)
+    order_id = str(order.id)
+    response = client.delete(f'/api/v1/order/{order_id}?phone_number=%2B7111')
+    data = response.json()
+    assert response.status_code == 403
+    assert data['detail'] == 'У вас нет прав на создание/изменения объекта'
+
+
+async def test_delete_order(client: TestClient, session: AsyncSession) -> None:
+    order, _, _, _ = await create_order(session)
+    order_id = str(order.id)
+    response = client.delete(f'/api/v1/order/{order_id}?phone_number=%2B7333')
+    data = response.json()
+    assert response.status_code == 200
+    assert data['detail'] == 'Заказ удалён'
