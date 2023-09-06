@@ -88,6 +88,7 @@ async def get_order(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=constants.ORDER_NOT_FOUND
         )
+    return order_db
 
 
 async def proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session):
