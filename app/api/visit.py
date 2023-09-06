@@ -87,4 +87,17 @@ async def get_visit(
     visit_id: int,
     session: AsyncSession = Depends(get_async_session)
 ):
-    return await visit_crud.get_with_names(visit_id, session)
+    visit_db = await visit_crud.get_with_names(visit_id, session)
+    if visit_db is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=constants.VISIT_NOT_FOUND
+        )
+
+
+@visit_router.patch('/{order_id}/{visit_id}')
+async def update_visit(
+    order_id: int,
+    session: AsyncSession = Depends(get_async_session)
+):
+    pass
