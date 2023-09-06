@@ -23,3 +23,14 @@ class VisitResponseSchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class VisitUpdateSchema(BaseModel):
+    order_id: int | None = None
+    worker_phone_number: str | None = None
+
+
+class VisitUpdateDBSchema(BaseModel):
+    order_id: int | None = None
+    worker_id: int | None = None
+    shopping_point_id: int | None = None

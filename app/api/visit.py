@@ -13,6 +13,8 @@ from app.schemas.visit import (
     VisitCreateDBSchema,
     VisitCreateSchema,
     VisitResponseSchema,
+    VisitUpdateDBSchema,
+    VisitUpdateSchema,
 )
 
 visit_router = APIRouter()
@@ -95,9 +97,47 @@ async def get_visit(
         )
 
 
+async def proccess_update_delete_permissions_and_obj_exsisting(phone_number, visit_id, session):
+    customer = await customer_crud.get_by_attribute(
+        'phone_number', phone_number, session
+    )
+    await validators.check_rights_to_create_and_update_delete_obj(
+        customer,
+        await worker_crud.get_by_attribute(
+            'phone_number', phone_number, session
+        )
+    )
+    visit_db = await validators.check_obj_exists(visit_id, visit_crud, constants.VISIT_NOT_FOUND, session)
+    await validators.check_owner(visit_db.customer_id, customer.id)
+    return customer, visit_db
+
+
 @visit_router.patch('/{order_id}/{visit_id}')
 async def update_visit(
     order_id: int,
+    visit_id: int,
+    phone_number: str,
+    visit_in: VisitUpdateSchema,
     session: AsyncSession = Depends(get_async_session)
 ):
-    pass
+    order_db = await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
+    await validators.check_deadline(order_db.close_date)
+    _, visit_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, visit_id, session)
+    visit_update_schema = VisitUpdateDBSchema(
+        order_id=visit_in.order_id
+    )
+    worker_phone_number = visit_in.worker_phone_number
+    if visit_in.worker_phone_number:
+        worker = await worker_crud.get_by_attribute(
+            'phone_number', worker_phone_number, session
+        )
+        if worker is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=constants.WORKER_NOT_FOUND
+            )
+        await validators.check_order_belongs_to_worker(order_db.worker_id, worker.id)
+        visit_update_schema.worker_id = worker.id
+        visit_update_schema.shopping_point_id = worker.shopping_point_id
+    await visit_crud.update(visit_db, visit_update_schema, session)
+    return await visit_crud.get_with_names(visit_id, session)
