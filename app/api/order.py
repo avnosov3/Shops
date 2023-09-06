@@ -156,6 +156,19 @@ async def update_status(
     order_in: OrderStatusUpdate,
     session: AsyncSession = Depends(get_async_session)
 ):
-    _, order_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session)
+    customer = await customer_crud.get_by_attribute(
+        'phone_number', phone_number, session
+    )
+    if customer is None:
+        worker = await customer_crud.get_by_attribute(
+            'phone_number', phone_number, session
+        )
+    # _, order_db = await proccess_update_delete_permissions_and_obj_exsisting(phone_number, order_id, session)
+    order_db = await validators.check_obj_exists(order_id, order_crud, constants.ORDER_NOT_FOUND, session)
+    await validators.check_order_belongs_to_worker(
+        order_db.worker_id,
+        worker.id,
+        message=constants.NOT_ORDER_RGHTS_TO_CHANGE_STATUS
+    )
     await order_crud.update(order_db, order_in, session)
     return await order_crud.get_with_names(order_id, session)

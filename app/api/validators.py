@@ -63,9 +63,9 @@ async def check_order_in_visit(crud, order_id, session):
         )
 
 
-async def check_order_belongs_to_worker(order_worker_id, worker_id):
+async def check_order_belongs_to_worker(order_worker_id, worker_id, message=constants.WRONG_WORKER_IN_VISIT):
     if order_worker_id != worker_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=constants.WRONG_WORKER_IN_VISIT
+            detail=message
         )

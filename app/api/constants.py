@@ -1,6 +1,7 @@
 SHOPPING_POINT_NOT_FOUND = 'По номеру телефона {} не найдено торговой точки'
 CREATE_UPDATE_OBJECT_FORBIDDEN = 'У вас нет прав на создание/изменения объекта'
 NOT_ORDER_OWNER = 'Нельзя изменять заказ, который вы не создавали'
+NOT_ORDER_RGHTS_TO_CHANGE_STATUS = 'Вы не можете изменить статус этого заказа'
 ORDER_NOT_FOUND = 'Заказ не найден'
 ORDER_DELETED = 'Заказ удалён'
 WORKER_NOT_BELOGNS = 'К этой торговой точке работник не привязан'
