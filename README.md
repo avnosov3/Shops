@@ -61,6 +61,7 @@ POSTGRES_USER=<Указать имя пользователя>
 POSTGRES_PASSWORD=<Указать пароль пользователя>
 DB_HOST=test-db
 DB_PORT=5432
+DB_TEST_URL=${DB_ENGINE}://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
 ```
 3. Запустить docker compose
 ```
